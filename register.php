@@ -16,13 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $confirm) {
         $response['message'] = "Passwords do not match.";
     } else {
-        $stmt = $db->prepare("SELECT COUNT(*) FROM admin WHERE username = ?");
+        $stmt = $db->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
         $stmt->execute([$username]);
         if ($stmt->fetchColumn() > 0) {
             $response['message'] = "Username already taken.";
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $insert = $db->prepare("INSERT INTO admin (username, password) VALUES (?, ?)");
+            $insert = $db->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
             if ($insert->execute([$username, $hash])) {
                 $response['success'] = true;
                 $response['message'] = "Registration successful. You can now <a href='#' data-bs-toggle='modal' data-bs-target='#authModal' data-bs-dismiss='modal'>login</a>.";
