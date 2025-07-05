@@ -1,24 +1,26 @@
 <?php
-// login.php
-session_start();
-require_once 'database.php'; // Connect to your DB
+session_start(); // Make sure session is started
+include './sql/db.php';
+header('Content-Type: application/json');
 
-if (isset($_POST['login'])) {
-    $email = $_POST['login_email'];
-    $password = $_POST['login_password'];
+$response = ['success' => false, 'message' => ''];
 
-    // Fetch user data from the database
-    $query = "SELECT * FROM users WHERE email = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([$email]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    $stmt = $db->prepare("SELECT * FROM admin WHERE username = ?");
+    $stmt->execute([$username]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user'] = $user;
-        header("Location: index.php"); // Redirect to homepage after successful login
-        exit;
+        $_SESSION['admin'] = true;
+        $_SESSION['username'] = $username;
+        $response['success'] = true;
     } else {
-        echo "Invalid credentials!";
+        $response['message'] = "Invalid username or password.";
     }
 }
-?>
+
+echo json_encode($response);
+exit;

@@ -212,22 +212,31 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+        <div class="collapse navbar-collapse" id="navbarNav" style="justify-content: space-evenly; ">
+            <ul class="navbar-nav ">
                 <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="store_services.php">Store Services</a></li>
                 <li class="nav-item"><a class="nav-link" href="about_us.php">About Us</a></li>
                 <li class="nav-item"><a class="nav-link" href="contact_us.php">Contact Us</a></li>
             </ul>
             <div class="d-flex ms-lg-3 gap-2 mt-3 mt-lg-0">
-                <?php if (!empty($_SESSION['user'])): ?>
-                    <span class="text-white fw-bold">Hello, <?= htmlspecialchars($_SESSION['user']['name']) ?></span>
+
+
+
+                <?php if (!empty($_SESSION['admin'])): ?>
+                    <span class="text-white fw-bold" style="display: flex;align-items: center;">Hello, <?= htmlspecialchars($_SESSION['username']) ?></span>
                     <a href="logout.php" class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</a>
                 <?php else: ?>
                     <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#authModal">
                         <i class="bi bi-box-arrow-in-right"></i> Login
                     </button>
                 <?php endif; ?>
+
+
+
+
+
+
                 <button class="btn btn-warning btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
                     <i class="bi bi-cart"></i> Cart
                     <?php if($cart_count > 0): ?>
@@ -259,7 +268,7 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
             <!-- Product Card 1 -->
             <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card product-card shadow-sm">
-                    <img src="./assets/product1.jpg" class="card-img-top" alt="Product 1">
+                    <img src="./assets/tablet1.jpg" class="card-img-top" alt="Product 1">
                     <div class="card-body">
                         <h5 class="card-title">Product 1</h5>
                         <p class="card-text">Short product description goes here.</p>
@@ -270,7 +279,7 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
             <!-- Product Card 2 -->
             <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card product-card shadow-sm">
-                    <img src="./assets/product2.jpg" class="card-img-top" alt="Product 2">
+                    <img src="./assets/tablet2.jpg" class="card-img-top" alt="Product 2">
                     <div class="card-body">
                         <h5 class="card-title">Product 2</h5>
                         <p class="card-text">Short product description goes here.</p>
@@ -281,7 +290,7 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
             <!-- Product Card 3 -->
             <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card product-card shadow-sm">
-                    <img src="./assets/product3.jpg" class="card-img-top" alt="Product 3">
+                    <img src="./assets/tablet3.jpg" class="card-img-top" alt="Product 3">
                     <div class="card-body">
                         <h5 class="card-title">Product 3</h5>
                         <p class="card-text">Short product description goes here.</p>
@@ -321,15 +330,22 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 </div>
 
 <!-- Modal for Login -->
-<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true"  >
+    <div class="modal-dialog" style="
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+        width: 100%;
+    ">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="authModalLabel">Login</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="login.php" method="POST">
+                <div id="loginError" class="alert alert-danger d-none"></div>
+                <form id="loginForm" >
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username" name="username" required>
@@ -346,5 +362,54 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $("#loginForm").submit(function (e) {
+            e.preventDefault();
+            const $messageBox = $("#loginError");
+            $.ajax({
+                type: "POST",
+                url: "./login.php",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        $messageBox
+                            .removeClass("d-none alert-danger")
+                            .addClass("alert alert-success")
+                            .text("Login successful! Redirecting...");
+                            setTimeout(() => {
+                                window.location.href = "index.php";
+                            }, 1000);
+                    } else {
+                        $messageBox
+                            .removeClass("d-none alert-success")
+                            .addClass("alert alert-danger")
+                            .text(response.message);
+                    }
+                },
+                error: function () {
+                    $messageBox
+                        .removeClass("d-none alert-success")
+                        .addClass("alert alert-danger")
+                        .text("An unexpected error occurred. Please try again.");
+                }
+            });
+        });
+
+
+        $('#authModal').on('hidden.bs.modal', function () {
+            $("#loginError")
+                .addClass("d-none")
+                .removeClass("alert-success alert-danger")
+                .text('');
+            $("#loginForm")[0].reset(); // optional: clear form
+        });
+    });
+</script>
+
 </body>
 </html>

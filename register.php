@@ -1,28 +1,36 @@
 <?php
-// register.php
-session_start();
-require_once 'database.php'; // Connect to your DB
 
-if (isset($_POST['register'])) {
-    $name = $_POST['register_name'];
-    $email = $_POST['register_email'];
-    $password = password_hash($_POST['register_password'], PASSWORD_DEFAULT);
+include './sql/db.php';
 
-    // Check if email already exists
-    $query = "SELECT * FROM users WHERE email = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([$email]);
+$err = '';
+$success = '';
 
-    if ($stmt->rowCount() > 0) {
-        echo "Email already in use.";
+if ($_POST) {
+    $username = trim($_POST['user']);
+    $password = $_POST['pass'];
+    $confirm = $_POST['pass_confirm'];
+
+    // Basic validation
+    if (empty($username) || empty($password) || empty($confirm)) {
+        $err = "Please fill in all fields.";
+    } elseif ($password !== $confirm) {
+        $err = "Passwords do not match.";
     } else {
-        $insert_query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-        $stmt = $pdo->prepare($insert_query);
-        $stmt->execute([$name, $email, $password]);
-        
-        $_SESSION['user'] = ['name' => $name, 'email' => $email];
-        header("Location: index.php"); // Redirect after successful registration
-        exit;
+        // Check if username already exists
+        $stmt = $db->prepare("SELECT COUNT(*) FROM admin WHERE username = ?");
+        $stmt->execute([$username]);
+        if ($stmt->fetchColumn() > 0) {
+            $err = "Username already taken.";
+        } else {
+            // Insert new admin with hashed password
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $insert = $db->prepare("INSERT INTO admin (username, password) VALUES (?, ?)");
+            if ($insert->execute([$username, $hash])) {
+                $success = "Registration successful. You can now <a href='login.php'>login</a>.";
+            } else {
+                $err = "Failed to register. Please try again.";
+            }
+        }
     }
 }
 ?>
