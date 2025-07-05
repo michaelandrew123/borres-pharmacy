@@ -1,5 +1,4 @@
 <?php
-session_start(); // Make sure session is started
 include './sql/db.php';
 header('Content-Type: application/json');
 

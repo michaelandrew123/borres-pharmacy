@@ -59,8 +59,6 @@ include './menu/nav.php';
 </section>
 
 
-
-
 <!-- Modal for Cart -->
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog">

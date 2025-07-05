@@ -1,7 +1,5 @@
 <?php
-session_start();
 include './sql/db.php';
-
 header('Content-Type: application/json');
 
 $response = ['success' => false, 'message' => ''];
