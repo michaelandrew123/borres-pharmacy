@@ -54,7 +54,7 @@
                 <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] == 0) {  ?>
                     <button class="btn btn-warning btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
                         <i class="bi bi-cart"></i> Cart
-                        <?php if($cart_count > 0): ?>
+                        <?php if(!empty($cart_count) && $cart_count > 0): ?>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-white">
                                 <?= $cart_count ?>
                             </span>
