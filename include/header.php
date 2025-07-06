@@ -30,9 +30,9 @@
 
         /* Button Styling */
         .btn {
-            background-color: rgb(0, 84, 180); /* Medium Blue */
-            border-color: rgb(0, 84, 180); /* Medium Blue */
-            color: white;
+            /*background-color: rgb(0, 84, 180); !* Medium Blue *!*/
+            /*border-color: rgb(0, 84, 180); !* Medium Blue *!*/
+            /*color: white;*/
         }
 
         .btn:hover, .btn:focus {
@@ -43,7 +43,7 @@
         /* Hero Section */
         .hero {
             height: 50vh;
-            background-image: url('assets/doctor.jpg');
+
             background-size: cover;
             background-position: center;
             color: white;

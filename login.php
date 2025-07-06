@@ -13,9 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['admin'] = true;
+
+        if($user['type'] == 1){
+            $_SESSION['admin'] = true;
+        }else{
+            $_SESSION['admin'] = false;
+        }
         $_SESSION['username'] = $username;
         $response['success'] = true;
+        $response['type'] = $_SESSION['admin'];
     } else {
         $response['message'] = "Invalid username or password.";
     }

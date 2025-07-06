@@ -1,14 +1,13 @@
 <?php
-session_start();
-require_once 'cart.php'; // Include cart handling logic
-$cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+include './sql/db.php';
 include './include/header.php';
 include './menu/nav.php';
+$featuredProducts = $db->query("SELECT * FROM products ORDER BY id DESC LIMIT 5")->fetchAll();
 ?>
 
 
 <!-- Hero Section -->
-<div class="hero">
+<div class="hero" style="background-image: url('assets/doctor.jpg');">
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1>Welcome to My Pharmacy</h1>
@@ -21,41 +20,22 @@ include './menu/nav.php';
 <section class="products-section">
     <div class="container">
         <h2 class="text-center mb-5">Featured Products</h2>
-        <div class="row">
-            <!-- Product Card 1 -->
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card product-card shadow-sm">
-                    <img src="./assets/tablet1.jpg" class="card-img-top" alt="Product 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 1</h5>
-                        <p class="card-text">Short product description goes here.</p>
-                        <button class="btn btn-primary">Shop Now</button>
+        <div class="row justify-content-center">
+            <?php foreach ($featuredProducts as $product): ?>
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card product-card shadow-sm">
+                        <img src="./admin/uploads/<?= htmlspecialchars($product['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
+                            <p class="card-text"><?= htmlspecialchars(mb_strimwidth($product['description'], 0, 60, '...')) ?></p>
+                            <p class="text-muted mb-2"><strong>&#8369;<?= number_format($product['price'], 2) ?></strong></p>
+                            <a href="product_detail.php?id=<?= $product['id'] ?>" class="btn btn-primary">Shop Now</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Product Card 2 -->
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card product-card shadow-sm">
-                    <img src="./assets/tablet2.jpg" class="card-img-top" alt="Product 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 2</h5>
-                        <p class="card-text">Short product description goes here.</p>
-                        <button class="btn btn-primary">Shop Now</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Product Card 3 -->
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card product-card shadow-sm">
-                    <img src="./assets/tablet3.jpg" class="card-img-top" alt="Product 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 3</h5>
-                        <p class="card-text">Short product description goes here.</p>
-                        <button class="btn btn-primary">Shop Now</button>
-                    </div>
-                </div>
-            </div>
-            
+            <?php endforeach; ?>
+        </div>
+    </div>
 </section>
 
 
@@ -88,4 +68,5 @@ include './menu/nav.php';
 <?php include './modal/register.php'; ?>
 
 
+<?php include './include/footer-script.php'; ?>
 <?php include './include/footer.php'; ?>
