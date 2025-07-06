@@ -2,7 +2,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(0, 191, 255);">
     <div class="container">
-        <?php if($_SESSION['admin']) {  ?>
+        <?php if($_SESSION['admin'] && !empty($_SESSION['admin'])) {  ?>
             <a class="navbar-brand fw-bold" href="../../admin/">My Pharmacy</a>
         <?php }else {  ?>
             <a class="navbar-brand fw-bold" href="/">My Pharmacy</a>
@@ -15,7 +15,7 @@
 
             <ul class="navbar-nav ">
 
-                <?php if($_SESSION['admin']) {  ?>
+                <?php if($_SESSION['admin'] && !empty($_SESSION['admin'])) {  ?>
                     <li class="nav-item"><a class="nav-link" href="./products.php">Products</a></li>
                     <li class="nav-item"><a class="nav-link" href="./upload_product.php">New Product</a></li>
                 <?php }else {  ?>
@@ -51,7 +51,7 @@
 
 
 
-                <?php if($_SESSION['admin'] == 0) {  ?>
+                <?php if($_SESSION['admin'] == 0 && !empty($_SESSION['admin'])) {  ?>
                     <button class="btn btn-warning btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
                         <i class="bi bi-cart"></i> Cart
                         <?php if($cart_count > 0): ?>
